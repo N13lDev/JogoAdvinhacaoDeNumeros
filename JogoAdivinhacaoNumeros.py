@@ -118,6 +118,66 @@ def desenharBotao(tela, x, y, largura, altura, texto, cor, corHover, fonte, corT
     return False
 
 
+def desenharInput(tela, x, y, largura, altura, texto, ativo, cores, fonte):
+    """Desenha uma caixa de entrada de texto"""
+
+    cor = cores["BRANCO"] if ativo else (200, 200, 200)
+
+    #Desenha o fundo da caixa
+    pygame.draw.rect(tela, cor, (x, y, largura, altura), border_radius=5)
+
+    #Desenha a borda da caixa
+    pygame.draw.rect(tela, cores["AZUL_ESCURO"], (x, y, largura, altura), 2, border_radius=5)
+
+    #Renderiza o texto dentro da caixa
+    textoSuperficie = fonte.render(texto, True, cores["AZUL_ESCURO"])
+    tela.blit(textoSuperficie, (x + 10, y + 10))
+
+def desenharTermometro(tela, x, y, palpite, numeroSecreto, cores):
+    """Desenha um termometro visual que indica o quao perto o jogador está do numero secreto"""
+
+    #Só desenha se houver algum palpite valido
+    if palpite == "":
+        return
+    
+    try:
+        palpiteInt = int(palpite)
+        diferenca = abs(palpiteInt - numeroSecreto)
+        alturaTotal = 200
+        largura = 40
+
+        #Base do termometro(fundo cinza)
+        pygame.draw.rect(tela, (200, 200, 200), (x, y, largura, alturaTotal))
+        pygame.draw.rect(tela, cores["AZUL_ESCURO"], (x, y, largura, alturaTotal), 2)
+
+        #Nivel do termometro (quanto mais proximo, mais alto)
+        if diferenca <= 100:
+            nivel = alturaTotal - (diferenca * alturaTotal/100)
+
+            #Cor varia conforme proximidade
+            if diferenca <= 10: 
+                cor = cores["VERMELHO"] #Muito quente
+            elif diferenca <=30:
+                cor = cores["LARANJA"] #Quente/morno
+            else:
+                cor = cores["AZUL_CLARO"] #Frio
+
+            pygame.draw.rect(tela, cor, (x+2, y + alturaTotal - nivel, largura - 4, nivel))
+    except:
+        pass #Ignora erros de conversão
+
+
+
+
+#def desenharMapaTesouro(tela, x, y)
+
+
+inicializarPyGame()
+definirCoresFontes()
+inicializarVariaveisGame()
+criarImagensSimples()
+
+    
 
 
 
@@ -148,9 +208,8 @@ def desenharBotao(tela, x, y, largura, altura, texto, cor, corHover, fonte, corT
 
 
 
-
-
-"""pygame.init() #Prepara o pygame para funcionar
+"""
+pygame.init() #Prepara o pygame para funcionar
 
 #Configurando a janela
 largura, altura = 600, 400 
